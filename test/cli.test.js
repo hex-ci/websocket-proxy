@@ -5,7 +5,7 @@ describe('CLI', () => {
   let originalConsoleLog;
   let originalConsoleError;
   let originalProcessExit;
-  
+
   beforeEach(() => {
     originalArgv = process.argv;
     originalConsoleLog = console.log;
@@ -24,7 +24,7 @@ describe('CLI', () => {
     test('should initialize with process arguments', () => {
       process.argv = ['node', 'script.js', 'server', '--port', '8080'];
       const cli = new CLI();
-      
+
       expect(cli.args).toEqual(['server', '--port', '8080']);
       expect(cli.logger).toBeDefined();
     });
@@ -61,7 +61,7 @@ describe('CLI', () => {
         '--server-host', 'example.com',
         '--server-port', '9092'
       ];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -79,7 +79,7 @@ describe('CLI', () => {
         '-h', 'example.com',
         '-s', '9092'
       ];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -120,7 +120,7 @@ describe('CLI', () => {
         '-vv',
         '--proxy-port', '9091'
       ];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -134,11 +134,15 @@ describe('CLI', () => {
       let exitCode = null;
       let errorMessage = '';
 
-      process.exit = (code) => { exitCode = code; };
-      console.error = (msg) => { errorMessage = msg; };
+      process.exit = (code) => {
+        exitCode = code;
+      };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       process.argv = ['node', 'script.js', 'server', '--unknown'];
-      
+
       const cli = new CLI();
       cli.parseArgs();
 
@@ -148,7 +152,7 @@ describe('CLI', () => {
 
     test('should ignore non-option arguments', () => {
       process.argv = ['node', 'script.js', 'server', 'extra-arg', '--local-port', '8080'];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -158,10 +162,10 @@ describe('CLI', () => {
 
     test('should set logger level based on verbosity', () => {
       process.argv = ['node', 'script.js', 'server', '-vv'];
-      
+
       const cli = new CLI();
       const setLevelSpy = jest.spyOn(cli.logger, 'setLevel');
-      
+
       const config = cli.parseArgs();
 
       expect(setLevelSpy).toHaveBeenCalledWith(2);
@@ -172,7 +176,9 @@ describe('CLI', () => {
   describe('showHelp', () => {
     test('should display help message', () => {
       let helpOutput = '';
-      console.log = (msg) => { helpOutput += msg + '\n'; };
+      console.log = (msg) => {
+        helpOutput += msg + '\n';
+      };
 
       const cli = new CLI();
       cli.showHelp();
@@ -215,7 +221,9 @@ describe('CLI', () => {
 
     test('should reject missing mode', () => {
       let errorMessage = '';
-      console.error = (msg) => { errorMessage = msg; };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       const cli = new CLI();
       const config = {
@@ -231,7 +239,9 @@ describe('CLI', () => {
 
     test('should reject invalid mode', () => {
       let errorMessage = '';
-      console.error = (msg) => { errorMessage = msg; };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       const cli = new CLI();
       const config = {
@@ -248,10 +258,12 @@ describe('CLI', () => {
     test('should reject invalid local port ranges', () => {
       const cli = new CLI();
       let errorMessage = '';
-      console.error = (msg) => { errorMessage = msg; };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       const invalidPorts = [0, -1, 65536, 100000];
-      
+
       invalidPorts.forEach(port => {
         errorMessage = '';
         const config = {
@@ -269,10 +281,12 @@ describe('CLI', () => {
     test('should reject invalid proxy port ranges', () => {
       const cli = new CLI();
       let errorMessage = '';
-      console.error = (msg) => { errorMessage = msg; };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       const invalidPorts = [0, -1, 65536, 100000];
-      
+
       invalidPorts.forEach(port => {
         errorMessage = '';
         const config = {
@@ -290,10 +304,12 @@ describe('CLI', () => {
     test('should reject invalid server port ranges', () => {
       const cli = new CLI();
       let errorMessage = '';
-      console.error = (msg) => { errorMessage = msg; };
+      console.error = (msg) => {
+        errorMessage = msg;
+      };
 
       const invalidPorts = [0, -1, 65536, 100000];
-      
+
       invalidPorts.forEach(port => {
         errorMessage = '';
         const config = {
@@ -310,9 +326,9 @@ describe('CLI', () => {
 
     test('should accept valid port ranges', () => {
       const cli = new CLI();
-      
+
       const validPorts = [1, 80, 443, 8080, 9090, 65535];
-      
+
       validPorts.forEach(port => {
         const config = {
           mode: 'server',
@@ -327,7 +343,7 @@ describe('CLI', () => {
 
     test('should handle string ports in validation', () => {
       const cli = new CLI();
-      
+
       // parseArgs converts strings to numbers, but testing edge case
       const config = {
         mode: 'server',
@@ -342,14 +358,8 @@ describe('CLI', () => {
 
   describe('Error handling', () => {
     test('should handle missing argument values', () => {
-      let exitCode = null;
-      let errorMessage = '';
-
-      process.exit = (code) => { exitCode = code; };
-      console.error = (msg) => { errorMessage = msg; };
-
       process.argv = ['node', 'script.js', 'server', '--local-port'];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -359,7 +369,7 @@ describe('CLI', () => {
 
     test('should handle empty arguments array', () => {
       process.argv = ['node', 'script.js'];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -371,7 +381,7 @@ describe('CLI', () => {
   describe('Integration tests', () => {
     test('should work with typical server command', () => {
       process.argv = ['node', 'ws-proxy', 'server', '-l', '8080', '-p', '9090', '-v'];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 
@@ -384,7 +394,7 @@ describe('CLI', () => {
 
     test('should work with typical client command', () => {
       process.argv = ['node', 'ws-proxy', 'client', '-h', 'example.com', '-s', '9090', '-l', '8080', '-vv'];
-      
+
       const cli = new CLI();
       const config = cli.parseArgs();
 

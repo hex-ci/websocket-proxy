@@ -13,11 +13,11 @@ describe('Logger', () => {
     originalConsoleLog = console.log;
     originalConsoleError = console.error;
     originalConsoleWarn = console.warn;
-    
+
     logOutput = [];
     errorOutput = [];
     warnOutput = [];
-    
+
     console.log = (...args) => logOutput.push(args.join(' '));
     console.error = (...args) => errorOutput.push(args.join(' '));
     console.warn = (...args) => warnOutput.push(args.join(' '));
@@ -243,7 +243,7 @@ describe('Logger', () => {
   describe('Timestamp formatting', () => {
     test('should include timestamp in all messages', () => {
       const logger = new Logger(3);
-      
+
       logger.info('Info');
       logger.debug('Debug');
       logger.trace('Trace');
@@ -261,7 +261,7 @@ describe('Logger', () => {
   describe('Level behavior combinations', () => {
     test('should respect level hierarchy (level 1)', () => {
       const logger = new Logger(1);
-      
+
       logger.info('Info');    // Should log (level 1)
       logger.debug('Debug');  // Should not log (level 2)
       logger.trace('Trace');  // Should not log (level 3)
@@ -275,7 +275,7 @@ describe('Logger', () => {
 
     test('should respect level hierarchy (level 2)', () => {
       const logger = new Logger(2);
-      
+
       logger.info('Info');    // Should log (level 1)
       logger.debug('Debug');  // Should log (level 2)
       logger.trace('Trace');  // Should not log (level 3)
@@ -289,7 +289,7 @@ describe('Logger', () => {
 
     test('should respect level hierarchy (level 3)', () => {
       const logger = new Logger(3);
-      
+
       logger.info('Info');    // Should log (level 1)
       logger.debug('Debug');  // Should log (level 2)
       logger.trace('Trace');  // Should log (level 3)
@@ -335,7 +335,7 @@ describe('Logger', () => {
     test('should not call Date constructor for filtered messages', () => {
       const logger = new Logger(0);
       const dateConstructorSpy = jest.spyOn(Date.prototype, 'toISOString');
-      
+
       logger.info('This should not log');
       logger.debug('This should not log');
       logger.trace('This should not log');
@@ -345,7 +345,7 @@ describe('Logger', () => {
 
     test('should handle rapid successive calls', () => {
       const logger = new Logger(3);
-      
+
       for (let i = 0; i < 100; i++) {
         logger.info(`Message ${i}`);
       }
@@ -355,7 +355,7 @@ describe('Logger', () => {
 
     test('should handle level changes during operation', () => {
       const logger = new Logger(0);
-      
+
       logger.info('Level 0 - should not log');
       logger.setLevel(1);
       logger.info('Level 1 - should log');

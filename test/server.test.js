@@ -12,7 +12,7 @@ class MockWebSocketServer {
     return new Promise((resolve, reject) => {
       this.server = net.createServer((socket) => {
         this.connections.push(socket);
-        
+
         socket.on('data', (data) => {
           const handshakeData = data.toString();
           if (handshakeData.includes('Sec-WebSocket-Key:')) {
@@ -27,7 +27,7 @@ class MockWebSocketServer {
 
               const response = [
                 'HTTP/1.1 101 Switching Protocols',
-                'Upgrade: websocket', 
+                'Upgrade: websocket',
                 'Connection: Upgrade',
                 `Sec-WebSocket-Accept: ${acceptKey}`,
                 '',
@@ -80,9 +80,9 @@ describe('ProxyServer', () => {
         proxyPort: 9090,
         verbosity: 1
       };
-      
+
       const server = new ProxyServer(config);
-      
+
       expect(server.config).toBe(config);
       expect(server.proxyServer).toBeNull();
       expect(server.connections).toBeInstanceOf(Map);
@@ -135,10 +135,10 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         // Try to connect to proxy - should fail when it tries to connect to local service
         const clientSocket = net.createConnection(9301, '127.0.0.1');
-        
+
         const handshakeRequest = [
           'GET / HTTP/1.1',
           'Host: 127.0.0.1',
@@ -154,10 +154,10 @@ describe('ProxyServer', () => {
           clientSocket.on('connect', () => {
             clientSocket.write(handshakeRequest);
           });
-          
+
           clientSocket.on('error', resolve);
           clientSocket.on('close', resolve);
-          
+
           setTimeout(resolve, 1000);
         });
 
@@ -181,9 +181,9 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         const clientSocket = net.createConnection(9302, '127.0.0.1');
-        
+
         await new Promise((resolve) => {
           clientSocket.on('connect', resolve);
         });
@@ -194,13 +194,13 @@ describe('ProxyServer', () => {
 
         // Disconnect client
         clientSocket.destroy();
-        
+
         // Wait for cleanup
         await sleep(100);
-        
+
         // Verify connection was cleaned up
         expect(server.getStats().activeConnections).toBe(0);
-        
+
       } finally {
         await server.stop();
         await mockWS.stop();
@@ -216,9 +216,9 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         const clientSocket = net.createConnection(9303, '127.0.0.1');
-        
+
         await new Promise((resolve) => {
           clientSocket.on('connect', () => {
             // Send invalid handshake (missing WebSocket headers)
@@ -228,16 +228,16 @@ describe('ProxyServer', () => {
               '',
               ''
             ].join('\r\n');
-            
+
             clientSocket.write(invalidHandshake);
           });
-          
+
           clientSocket.on('error', resolve);
           clientSocket.on('close', resolve);
-          
+
           setTimeout(resolve, 500);
         });
-        
+
       } finally {
         await server.stop();
       }
@@ -252,14 +252,14 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         const clientSocket = net.createConnection(9304, '127.0.0.1');
-        
+
         await new Promise((resolve) => {
           clientSocket.on('connect', () => {
             // Send partial handshake
             clientSocket.write('GET / HTTP/1.1\r\n');
-            
+
             setTimeout(() => {
               // Send rest of handshake
               const restOfHandshake = [
@@ -271,19 +271,19 @@ describe('ProxyServer', () => {
                 '',
                 ''
               ].join('\r\n');
-              
+
               clientSocket.write(restOfHandshake);
             }, 100);
           });
-          
+
           clientSocket.on('error', resolve);
           clientSocket.on('close', resolve);
-          
+
           setTimeout(resolve, 1000);
         });
-        
+
         clientSocket.destroy();
-        
+
       } finally {
         await server.stop();
       }
@@ -303,36 +303,36 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         // Create multiple connections
         const sockets = [];
         for (let i = 0; i < 3; i++) {
           const socket = net.createConnection(9305, '127.0.0.1');
           sockets.push(socket);
-          
+
           await new Promise((resolve) => {
             socket.on('connect', resolve);
           });
         }
-        
+
         // Check stats
         const stats = server.getStats();
         expect(stats.totalConnections).toBe(3);
         expect(stats.activeConnections).toBe(3);
-        
+
         // Close one connection
         sockets[0].destroy();
         await sleep(100);
-        
+
         const updatedStats = server.getStats();
         expect(updatedStats.totalConnections).toBe(3);
         expect(updatedStats.activeConnections).toBe(2);
-        
+
         // Cleanup remaining connections
         for (let i = 1; i < sockets.length; i++) {
           sockets[i].destroy();
         }
-        
+
       } finally {
         await server.stop();
         await mockWS.stop();
@@ -364,21 +364,21 @@ describe('ProxyServer', () => {
 
       try {
         await server.start();
-        
+
         // Create connection
         const socket = net.createConnection(9306, '127.0.0.1');
         await new Promise((resolve) => {
           socket.on('connect', resolve);
         });
-        
+
         expect(server.getStats().activeConnections).toBe(1);
-        
+
         // Stop server
         await server.stop();
-        
+
         // Verify all connections are cleaned up
         expect(server.getStats().activeConnections).toBe(0);
-        
+
       } finally {
         await mockWS.stop();
       }

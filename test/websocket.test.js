@@ -80,7 +80,7 @@ describe('WebSocketFrame', () => {
         Buffer.alloc(8), // 64-bit length (will be set manually)
         payload
       ]);
-      
+
       // Set the 64-bit length
       buffer.writeBigUInt64BE(BigInt(70000), 2);
 
@@ -94,7 +94,7 @@ describe('WebSocketFrame', () => {
       const originalPayload = Buffer.from('Hello');
       const maskKey = Buffer.from([0x37, 0xfa, 0x21, 0x3d]);
       const maskedPayload = Buffer.alloc(5);
-      
+
       // Apply mask
       for (let i = 0; i < originalPayload.length; i++) {
         maskedPayload[i] = originalPayload[i] ^ maskKey[i % 4];
@@ -169,11 +169,11 @@ describe('WebSocketFrame', () => {
 
       expect(frame[0]).toBe(0x82); // FIN=1, opcode=BINARY
       expect(frame[1]).toBe(0x84); // Masked, length=4
-      
+
       // Verify mask key is present
       const maskKey = frame.slice(2, 6);
       expect(maskKey.length).toBe(4);
-      
+
       // Verify payload is masked
       const maskedPayload = frame.slice(6);
       expect(maskedPayload.length).toBe(4);
@@ -204,7 +204,7 @@ describe('WebSocketFrame', () => {
       expect(frame[0]).toBe(0x81); // FIN=1, opcode=TEXT
       expect(frame[1]).toBe(0xfe); // Masked, extended length
       expect(frame.readUInt16BE(2)).toBe(200);
-      
+
       // Verify mask key is present
       const maskKey = frame.slice(4, 8);
       expect(maskKey.length).toBe(4);
@@ -238,7 +238,7 @@ describe('WebSocketFrame', () => {
       expect(response).toContain('Connection: Upgrade');
       expect(response).toContain('Sec-WebSocket-Accept:');
       expect(response.endsWith('\r\n\r\n')).toBe(true);
-      
+
       // Verify the accept key is correctly calculated
       const crypto = require('crypto');
       const expectedAccept = crypto
@@ -251,13 +251,13 @@ describe('WebSocketFrame', () => {
     test('should create different accept keys for different input keys', () => {
       const key1 = 'key1==';
       const key2 = 'key2==';
-      
+
       const response1 = WebSocketFrame.createHandshakeResponse(key1);
       const response2 = WebSocketFrame.createHandshakeResponse(key2);
 
       const accept1 = response1.match(/Sec-WebSocket-Accept: (.+)/)[1];
       const accept2 = response2.match(/Sec-WebSocket-Accept: (.+)/)[1];
-      
+
       expect(accept1).not.toBe(accept2);
     });
   });
@@ -390,7 +390,7 @@ describe('WebSocketFrame', () => {
   describe('Round-trip testing', () => {
     test('should create and parse frames correctly', () => {
       const originalPayload = Buffer.from('Round trip test');
-      
+
       // Test both masked and unmasked
       [true, false].forEach(masked => {
         const frame = WebSocketFrame.createFrame(WebSocketFrame.OPCODES.TEXT, originalPayload, masked);
@@ -406,7 +406,7 @@ describe('WebSocketFrame', () => {
 
     test('should handle multiple opcodes in round trip', () => {
       const payload = Buffer.from('test');
-      
+
       Object.values(WebSocketFrame.OPCODES).forEach(opcode => {
         const frame = WebSocketFrame.createFrame(opcode, payload, false);
         const parsed = WebSocketFrame.parseFrame(frame);

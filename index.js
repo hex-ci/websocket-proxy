@@ -22,7 +22,7 @@ async function startProxy(config, options = {}) {
   } = options;
 
   const proxy = createProxy(config);
-  
+
   if (config.mode === 'server') {
     consoleObj.log('Starting WebSocket proxy server...');
   } else {
