@@ -1,5 +1,5 @@
 {
-  "name": "websocket-proxy",
+  "name": "websocket-proxy-plus",
   "version": "1.0.0",
   "description": "WebSocket Proxy CLI for development and testing",
   "main": "index.js",
@@ -42,12 +42,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hex-ci/websocket-proxy.git"
+    "url": "git+https://github.com/hex-ci/websocket-proxy-plus.git"
   },
   "bugs": {
-    "url": "https://github.com/hex-ci/websocket-proxy/issues"
+    "url": "https://github.com/hex-ci/websocket-proxy-plus/issues"
   },
-  "homepage": "https://github.com/hex-ci/websocket-proxy#readme",
+  "homepage": "https://github.com/hex-ci/websocket-proxy-plus#readme",
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "eslint": "^9.17.0",

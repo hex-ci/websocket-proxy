@@ -16,13 +16,13 @@ A lightweight, high-performance WebSocket proxy CLI tool for development and tes
 
 ### Global Installation
 ```bash
-npm install -g websocket-proxy
+npm install -g websocket-proxy-plus
 ```
 
 ### Local Development
 ```bash
 git clone <repository-url>
-cd websocket-proxy
+cd websocket-proxy-plus
 npm install
 ```
 
@@ -120,7 +120,7 @@ The WebSocket proxy operates in two modes:
 ### ProxyServer Class
 
 ```javascript
-const { ProxyServer } = require('websocket-proxy');
+const { ProxyServer } = require('websocket-proxy-plus');
 
 const server = new ProxyServer({
   localPort: 8080,    // Port of local WebSocket service
@@ -136,7 +136,7 @@ await server.stop();
 ### ProxyClient Class
 
 ```javascript
-const { ProxyClient } = require('websocket-proxy');
+const { ProxyClient } = require('websocket-proxy-plus');
 
 const client = new ProxyClient({
   serverHost: 'proxy.example.com',  // Proxy server host
@@ -200,7 +200,7 @@ netstat -tlnp | grep 9090
 - Consider connection limits for production use
 
 **Memory Leaks**
-- Monitor with `process.memoryUsage()` 
+- Monitor with `process.memoryUsage()`
 - Ensure proper connection cleanup
 - Use connection timeouts in production
 
