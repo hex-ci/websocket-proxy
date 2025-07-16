@@ -1,5 +1,7 @@
 # WebSocket Proxy
 
+[![npm version](https://badgen.net/npm/v/websocket-proxy-plus)](https://www.npmjs.com/package/websocket-proxy-plus)
+
 A lightweight, high-performance WebSocket proxy CLI tool for development and testing environments. This tool enables secure WebSocket communication through firewalls and NAT by establishing proxy tunnels between clients and servers.
 
 ## Features
