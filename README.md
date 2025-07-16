@@ -16,16 +16,8 @@ A lightweight, high-performance WebSocket proxy CLI tool for development and tes
 
 ## Installation
 
-### Global Installation
 ```bash
 npm install -g websocket-proxy-plus
-```
-
-### Local Development
-```bash
-git clone <repository-url>
-cd websocket-proxy-plus
-npm install
 ```
 
 ## Quick Start
