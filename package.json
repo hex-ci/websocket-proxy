@@ -1,6 +1,6 @@
 {
   "name": "websocket-proxy-plus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "WebSocket Proxy CLI for development and testing",
   "main": "index.js",
   "bin": {
